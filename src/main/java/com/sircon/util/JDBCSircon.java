@@ -5,6 +5,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class JDBCSircon {
     
@@ -35,9 +37,9 @@ public class JDBCSircon {
     
     public PreparedStatement getSentencia(String sql){
         try {
-            sentencia = conexion.prepareCall(sql);
+            sentencia = conexion.prepareStatement(sql);
         } catch (SQLException e) {
-            System.err.println(e);
+            Logger.getLogger(JDBCSircon.class.getName()).log(Level.SEVERE, null, e);
         }
         return sentencia;
     }
@@ -48,7 +50,7 @@ public class JDBCSircon {
         try {
             resultado = sentencia.executeQuery();
         } catch (SQLException e) {
-            System.err.println(e);
+            Logger.getLogger(JDBCSircon.class.getName()).log(Level.SEVERE, null, e);
         }
         return resultado;
     }
@@ -59,7 +61,7 @@ public class JDBCSircon {
         try {
             sentencia.executeUpdate();
         } catch (SQLException e) {
-            System.err.println(e);
+            Logger.getLogger(JDBCSircon.class.getName()).log(Level.SEVERE, null, e);
         }
     }
     
@@ -72,7 +74,7 @@ public class JDBCSircon {
             if (resultado != null)
                 resultado.close();
         } catch (SQLException e) {
-            System.err.println(e);
+            Logger.getLogger(JDBCSircon.class.getName()).log(Level.SEVERE, null, e);
         }
     }
     
