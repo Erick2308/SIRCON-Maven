@@ -33,14 +33,13 @@ public class AdministrativoDAO implements DAOBaseI<Administrativo, Long>{
         } catch (SQLException e) {
             Logger.getLogger(AdministrativoDAO.class.getName()).log(Level.SEVERE, null, e);
         }
-        System.out.println("Personal Actualizado");
+        System.out.println("Personal Creado");
         jdbc.cerrarObjetos();
     }
 
     @Override
-    public void modificar(Administrativo object) {  
-        
-        String sql = "UPDATE administrativo SET cargo = ?, fechaIngreso = ?, fechaSalida = ?, sueldo = ?, profesion= ? WHERE Usuario_usuario = ?";
+    public void modificar(Administrativo object) {          
+        String sql = "UPDATE administrativo SET cargo = ?, fechaIngreso = ?, fechaSalida = ?, sueldo = ?, profesion= ? WHERE dni = ?";
         PreparedStatement ps = jdbc.getSentencia(sql);
         try {
             ps.setString(1, object.getCargo());
@@ -48,7 +47,7 @@ public class AdministrativoDAO implements DAOBaseI<Administrativo, Long>{
             ps.setDate(3, (Date) object.getFechaSalida());
             ps.setFloat(4, object.getSueldo());
             ps.setString(5, object.getProfesion());
-            ps.setString(6, object.getUsuario());
+            ps.setString(6, object.getDni());
         } catch (SQLException e) {
             Logger.getLogger(AdministrativoDAO.class.getName()).log(Level.SEVERE, null, e);
         }
@@ -57,16 +56,16 @@ public class AdministrativoDAO implements DAOBaseI<Administrativo, Long>{
     }
 
     @Override
-    public void eliminar(String id) {        
-        String sql = "DELETE FROM administrativo WHERE Usuario_usuario = ? ";
+    public void eliminar(Long dni) {        
+        String sql = "DELETE FROM administrativo WHERE dni = ? ";
         PreparedStatement ps = jdbc.getSentencia(sql);
         try {
-            ps.setString(1, id);
+            ps.setLong(1, dni);
             jdbc.ejecutarActualizacion(ps);
         } catch (SQLException e) {
             Logger.getLogger(AdministrativoDAO.class.getName()).log(Level.SEVERE, null, e);
         }
-        System.out.println("Usuario: "+id+"Elminado correctamente");
+        System.out.println("Usuario: "+dni+"Elminado correctamente");
         jdbc.cerrarObjetos();
     }
 
@@ -102,14 +101,14 @@ public class AdministrativoDAO implements DAOBaseI<Administrativo, Long>{
 
   
     @Override
-    public Administrativo obtener(String id) {
+    public Administrativo obtener(Long dni) {
         
-        String sql = "SELECT * FROM administrativo WHERE Usuario_usuario = ?";
+        String sql = "SELECT * FROM administrativo WHERE dni = ?";
         PreparedStatement ps = jdbc.getSentencia(sql);
         
         Administrativo objEncontrado = null;
         try {
-            ps.setString(1, id);
+            ps.setLong(1, dni);
             ResultSet rs = jdbc.ejecutarConsulta(ps);
             rs.next();
                 objEncontrado = new Administrativo();
@@ -124,9 +123,11 @@ public class AdministrativoDAO implements DAOBaseI<Administrativo, Long>{
             Logger.getLogger(AdministrativoDAO.class.getName()).log(Level.SEVERE, null, e);
         }
         
-        System.out.println("Personal encontrado con id: "+id);
+        System.out.println("Personal encontrado con dni: "+dni);
         System.out.println(objEncontrado);
         jdbc.cerrarObjetos();
         return objEncontrado;
     }
 }
+
+    

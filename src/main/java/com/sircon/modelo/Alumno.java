@@ -17,7 +17,7 @@ public class Alumno extends Usuario {
     /**
      * 
      */
-    public String codAlumno;
+    public String Usuario;
 
     /**
      * 
@@ -34,12 +34,12 @@ public class Alumno extends Usuario {
      */
     public String estado;
 
-    public String getCodAlumno() {
-        return codAlumno;
+    public String getUsuario() {
+        return Usuario;
     }
 
-    public void setCodAlumno(String codAlumno) {
-        this.codAlumno = codAlumno;
+    public void setUsuario(String Usuario) {
+        this.Usuario = Usuario;
     }
 
     public Date getFechaInscripcion() {

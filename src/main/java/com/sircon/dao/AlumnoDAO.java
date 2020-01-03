@@ -16,62 +16,59 @@ public class AlumnoDAO implements DAOBaseI<Alumno, Long> {
     private JDBCSircon jdbc;
 
     public AlumnoDAO(JDBCSircon instanciaJDBC) {
-
+        
         this.jdbc = instanciaJDBC;
     }
 
-    @Override
-    public void insertar(Alumno object) {
-        String sql = "INSERT INTO administrativo (cargo, fechaIngreso, fechaSalida, sueldo, profesion) values (?, ?, ?, ?, ?)";
+        @Override
+        public void insertar(Alumno object ) {
+        String sql = "INSERT INTO alumno (estado, fechaInscripcion, fechaSalida, Usuario_usuario) values (?, ?, ?, ?)";
+            PreparedStatement ps = jdbc.getSentencia(sql);
+            try {
+                ps.setString(1, object.getEstado());
+                ps.setDate(2, (Date) object.getFechaInscripcion());
+                ps.setDate(3, (Date) object.getFechaSalida());
+                ps.setString(4, object.getUsuario());
+            } catch (SQLException e) {
+                Logger.getLogger(AdministrativoDAO.class.getName()).log(Level.SEVERE, null, e);
+            }
+            System.out.println("Alumno Creado");
+            jdbc.cerrarObjetos();
+        }
+
+        @Override
+        public void modificar(Alumno object) {            
+        String sql = "UPDATE alumno SET estado = ?, fechaInscripcion = ?, fechaSalida= ? WHERE Usuario_usuario = ?";
         PreparedStatement ps = jdbc.getSentencia(sql);
         try {
-            ps.setString(1, object.getCargo());
-            ps.setDate(2, (Date) object.getFechaIngreso());
+            ps.setString(1, object.getEstado());
+            ps.setDate(2, (Date) object.getFechaInscripcion());
             ps.setDate(3, (Date) object.getFechaSalida());
-            ps.setFloat(4, object.getSueldo());
-            ps.setString(5, object.getProfesion());
+            ps.setString(4, object.getUsuario());
         } catch (SQLException e) {
             Logger.getLogger(AdministrativoDAO.class.getName()).log(Level.SEVERE, null, e);
         }
-        System.out.println("Personal Actualizado");
+        System.out.println("Alumno :"+object.getUsuario()+" actualizado correctamente");
         jdbc.cerrarObjetos();
-    }
-
-    @Override
-    public void modificar(Alumno object) {
-
-        String sql = "UPDATE administrativo SET cargo = ?, fechaIngreso = ?, fechaSalida = ?, sueldo = ?, profesion= ? WHERE Usuario_usuario = ?";
-        PreparedStatement ps = jdbc.getSentencia(sql);
-        try {
-            ps.setString(1, object.getCargo());
-            ps.setDate(2, (Date) object.getFechaIngreso());
-            ps.setDate(3, (Date) object.getFechaSalida());
-            ps.setFloat(4, object.getSueldo());
-            ps.setString(5, object.getProfesion());
-            ps.setString(6, object.getUsuario());
-        } catch (SQLException e) {
-            Logger.getLogger(AdministrativoDAO.class.getName()).log(Level.SEVERE, null, e);
+        
         }
-        System.out.println("Usuario :" + object.getUsuario() + " actualizado correctamente");
-        jdbc.cerrarObjetos();
-    }
 
-    @Override
-    public void eliminar(String id) {
-        String sql = "DELETE FROM administrativo WHERE Usuario_usuario = ? ";
+        @Override
+        public void eliminar(Long id) {            
+        String sql = "DELETE FROM alumno WHERE Usuario_usuario = ? ";
         PreparedStatement ps = jdbc.getSentencia(sql);
         try {
-            ps.setString(1, id);
+            ps.setLong(1, id);
             jdbc.ejecutarActualizacion(ps);
         } catch (SQLException e) {
             Logger.getLogger(AdministrativoDAO.class.getName()).log(Level.SEVERE, null, e);
         }
-        System.out.println("Usuario: " + id + "Elminado correctamente");
+        System.out.println("alumno: " + id + "Elminado correctamente");
         jdbc.cerrarObjetos();
     }
 
-    @Override
-    public List<Alumno> obtenerTodos() {
+        @Override
+        public List<Alumno> obtenerTodos() {
         String sql = "SELECT * FROM alumno";
         PreparedStatement ps = jdbc.getSentencia(sql);
         ResultSet rs = jdbc.ejecutarConsulta(ps);
@@ -81,10 +78,8 @@ public class AlumnoDAO implements DAOBaseI<Alumno, Long> {
             while (rs.next()) {
                 objEncontrado = new Alumno();
                 objEncontrado.setUsuario(rs.getString("usuario"));
-                objEncontrado.setNombres(rs.getString("nombre"));
-                objEncontrado.setApellidoPaterno(rs.getString("apellidoPaterno"));
-                objEncontrado.setApellidoMaterno(rs.getString("apellidoMaterno"));
-                objEncontrado.setFechaInscripcion(rs.getDate("fecha inscripcion"));
+                objEncontrado.setFechaInscripcion(rs.getDate("fechaInscripcion"));
+                objEncontrado.setFechaSalida(rs.getDate("fechaSalida"));
                 objEncontrado.setEstado(rs.getString("estado"));
                 resultado.add(objEncontrado);
             }
@@ -92,39 +87,37 @@ public class AlumnoDAO implements DAOBaseI<Alumno, Long> {
             Logger.getLogger(AdministrativoDAO.class.getName()).log(Level.SEVERE, null, e);
         }
 
-        System.out.println("Personal Administrativo Encontrados: ");
+        System.out.println(" Estudiantes encontrados: ");
         System.out.println(resultado);
         jdbc.cerrarObjetos();
         return resultado;
-
     }
 
-    @Override
-    public Alumno obtener(String id) {
-
-        String sql = "SELECT * FROM administrativo WHERE Usuario_usuario = ?";
+        @Override
+        public Alumno obtener(Long id) {
+        String sql = "SELECT * FROM alumno WHERE Usuario_usuario = ?";
         PreparedStatement ps = jdbc.getSentencia(sql);
 
         Alumno objEncontrado = null;
         try {
-            ps.setString(1, id);
+            ps.setLong(1, id);
             ResultSet rs = jdbc.ejecutarConsulta(ps);
+            objEncontrado.setUsuario(rs.getString("usuario"));
+            objEncontrado.setFechaInscripcion(rs.getDate("fechaInscripcion"));
+            objEncontrado.setFechaSalida(rs.getDate("fechaSalida"));
+            objEncontrado.setEstado(rs.getString("estado"));
             rs.next();
             objEncontrado = new Alumno();
-                objEncontrado.setUsuario(rs.getString("usuario"));
-                objEncontrado.setNombres(rs.getString("nombre"));
-                objEncontrado.setApellidoPaterno(rs.getString("apellidoPaterno"));
-                objEncontrado.setApellidoMaterno(rs.getString("apellidoMaterno"));
-                objEncontrado.setFechaInscripcion(rs.getDate("fecha inscripcion"));
-                objEncontrado.setEstado(rs.getString("estado"));
+            
         } catch (SQLException e) {
-            Logger.getLogger(AlumnoDAO.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(AdministrativoDAO.class.getName()).log(Level.SEVERE, null, e);
         }
 
-        System.out.println("Personal encontrado con id: " + id);
+        System.out.println("Alumno encontrado con dni: " + id);
         System.out.println(objEncontrado);
         jdbc.cerrarObjetos();
         return objEncontrado;
     }
 
-}
+    }
+
